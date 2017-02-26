@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <title>Hello World for PWA</title>
+  <link rel="manifest" href="manifest.json" />
+</head>
+<body>
+  <h1>Hello World for PWA</h1>
+  <button class="enable-push-btn">
+    Enable Push Messaging
+  </button>
+  <button class="local-push-btn" >
+    Push Messaging
+  </button>
+
+  <script>
+    const enablePushButton = document.querySelector('.enable-push-btn');
+    const localPushButton = document.querySelector('.local-push-btn');
+
+    let swRegistration = null;
+
+    function buttonState() {
+      if (Notification.permission === 'granted') {
+        enablePushButton.disabled = true;
+        enablePushButton.textContent = 'Push Messaging Enabled';
+      } else {
+        localPushButton.disabled = true;
+      }
+    }
+
+    function showNotification() {
+      swRegistration.showNotification('Notice', {
+        body: 'This is a test notice.',
+        icon: './images/homescreen192.png',
+        vibrate: [200, 100, 200, 100, 200, 100, 200],
+        tag: 'hello-world-pwa'
+      });
+    }
+
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+      console.log('Service worker and Push is supported');
+      navigator.serviceWorker.register('sw.js').then(function(swReg) {
+        console.log('Service Worker is registered', swReg);
+        swRegistration = swReg;
+        buttonState();
+      }).catch(function(error) {
+        console.error('Service worker Error', error);
+      });
+    } else {
+      console.warn('Push messaging is not supported');
+      pushButton.textContent = 'Push Not supported';
+    }
+
+    enablePushButton.addEventListener('click', function() {
+      Notification.requestPermission().then(function(result) {
+        if (result === 'denied') {
+          console.log('Permission wasn\'t granted.');
+          alert('Notifications blocked. Please enable them in your browser.');
+          return;
+        }
+        if (result === 'default') {
+          console.log('The permission request was dismissed.');
+          alert('Notifications blocked. Please retry.');
+          return;
+        }
+        console.log('Permission granted');
+        localPushButton.disabled = false;
+        enablePushButton.disabled = true;
+        enablePushButton.textContent = 'Push Messaging Enabled';
+      });
+    });
+
+    localPushButton.addEventListener('click', function() {
+      showNotification();
+    });
+
+  </script>
+</body>
+</html>
