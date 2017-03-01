@@ -7,6 +7,7 @@
   <title>Hello World for PWA</title>
   <link rel="icon" href="images/homescreen192.png" sizes="192x192" type="image/png">
   <link rel="manifest" href="manifest.json" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/6.1.19/browser.min.js"></script>
 </head>
 <body>
   <header>
@@ -46,11 +47,11 @@
 
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       console.log('Service worker and Push is supported');
-      navigator.serviceWorker.register('sw.js').then(function(swReg) {
+      navigator.serviceWorker.register('sw.js').then(swReg => {
         console.log('Service Worker is registered', swReg);
         swRegistration = swReg;
         buttonState();
-      }).catch(function(error) {
+      }).catch(error => {
         console.error('Service worker Error', error);
       });
     } else {
@@ -58,7 +59,7 @@
       pushButton.textContent = 'Push Not supported';
     }
 
-    enablePushButton.addEventListener('click', function() {
+    enablePushButton.addEventListener('click', () => {
       Notification.requestPermission().then(function(result) {
         if (result === 'denied') {
           console.log('Permission wasn\'t granted.');
@@ -77,7 +78,7 @@
       });
     });
 
-    localPushButton.addEventListener('click', function() {
+    localPushButton.addEventListener('click', () => {
       showNotification();
     });
 
