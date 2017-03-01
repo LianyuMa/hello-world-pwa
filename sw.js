@@ -1,6 +1,6 @@
 'use strict';
 
-self.addEventListener('notificationclick', function(event) {
+self.addEventListener('notificationclick', event => {
   console.log('[Service Worker] Notification click Received.');
 
   event.notification.close();
@@ -11,10 +11,10 @@ self.addEventListener('notificationclick', function(event) {
 });
 
 
-self.addEventListener('fetch', function(event) {
+self.addEventListener('fetch', event => {
   console.log(event.request.url);
   event.respondWith(
-    caches.match(event.request).then(function(response) {
+    caches.match(event.request).then(response => {
       return response || fetch(event.request);
     })
   );
